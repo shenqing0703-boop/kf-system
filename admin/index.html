@@ -42,15 +42,36 @@
         #msg-input { flex: 1; height: 42px; padding: 0 15px; border: 1px solid #d9d9d9; border-radius: 4px; outline: none; font-size: 14px; }
         .btn { height: 42px; border: none; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; }
         .btn-send { background: #00a854; color: white; padding: 0 25px; margin-left: 10px; }
+
+        .login-screen { position: fixed; inset: 0; background: linear-gradient(135deg, #f0f2f5, #dff7e9); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+        .login-card { width: 360px; background: #fff; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.12); padding: 28px; }
+        .login-title { text-align: center; color: #00a854; font-size: 20px; font-weight: bold; margin-bottom: 18px; }
+        .login-input { width: 100%; height: 42px; border: 1px solid #d9d9d9; border-radius: 6px; padding: 0 12px; margin-bottom: 12px; outline: none; font-size: 14px; }
+        .login-input:focus { border-color: #00a854; }
+        .login-btn { width: 100%; height: 42px; background: #00a854; color: #fff; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        .login-error { color: #ff4d4f; font-size: 13px; text-align: center; height: 20px; margin-top: 10px; }
+        .logout-btn { margin-left: auto; background: #f5f5f5; border: 1px solid #d9d9d9; color: #555; border-radius: 4px; padding: 6px 10px; cursor: pointer; }
+        body.locked .sidebar, body.locked .main-chat { display: none; }
     </style>
 </head>
-<body>
+<body class="locked">
+
+    <div id="login-screen" class="login-screen">
+        <div class="login-card">
+            <div class="login-title">HO体育后台登录</div>
+            <input id="login-user" class="login-input" type="text" placeholder="请输入账号" autocomplete="username">
+            <input id="login-pass" class="login-input" type="password" placeholder="请输入密码" autocomplete="current-password" onkeydown="if(event.keyCode==13) doLogin()">
+            <button class="login-btn" onclick="doLogin()">登录</button>
+            <div id="login-error" class="login-error"></div>
+        </div>
+    </div>
+
     <div class="sidebar">
         <div class="sidebar-header">HO体育 接待3号大厅</div>
         <div id="list">加载中...</div>
     </div>
     <div class="main-chat">
-        <div class="main-header"><div class="header-avatar"></div>HO体育-客服小樱 <span style="color:#888;font-weight:normal;margin-left:10px;">(正在接待: <span id="current-title" style="color: #00a854;">未选择粉丝</span>)</span></div>
+        <div class="main-header"><div class="header-avatar"></div>HO体育-客服小樱 <span style="color:#888;font-weight:normal;margin-left:10px;">(正在接待: <span id="current-title" style="color: #00a854;">未选择粉丝</span>)</span><button class="logout-btn" onclick="logoutAdmin()">退出登录</button></div>
         <div id="messages"></div>
         <div class="input-area">
             <label class="btn" style="background:#f5f5f5; color:#555; padding:0 16px; font-size:22px; border:1px solid #d9d9d9; cursor:pointer;" for="file-input">📎</label>
@@ -66,7 +87,40 @@
     
     <script>
         var db; var currentChat = null; var unreadChats = {}; var flashInterval = null; var currentChatImageItems = [];
+        const ADMIN_USERNAME = "admin";
+        const ADMIN_PASSWORD = "123456";
+
         window.onload = function() {
+            if (localStorage.getItem("admin_logged_in") === "yes") {
+                showAdminPanel();
+            }
+        };
+
+        function doLogin() {
+            const username = document.getElementById("login-user").value.trim();
+            const password = document.getElementById("login-pass").value.trim();
+            const error = document.getElementById("login-error");
+            if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+                localStorage.setItem("admin_logged_in", "yes");
+                error.innerText = "";
+                showAdminPanel();
+            } else {
+                error.innerText = "账号或密码错误";
+            }
+        }
+
+        function logoutAdmin() {
+            localStorage.removeItem("admin_logged_in");
+            location.reload();
+        }
+
+        function showAdminPanel() {
+            document.body.classList.remove("locked");
+            document.getElementById("login-screen").style.display = "none";
+            initFirebaseAndAdmin();
+        }
+
+        function initFirebaseAndAdmin() {
             const firebaseConfig = {
                 apiKey: "AIzaSyDDs2uCueE3NJdZZxpMGp-1Snrt34E4nf0",
                 authDomain: "chat-system-87d17.firebaseapp.com",
