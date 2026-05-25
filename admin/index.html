@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>HO体育客服官方线路 - 管理后台</title>
-    <link id="web-icon" rel="shortcut icon" type="image/x-icon" href="https://ho-chat3.pages.dev/logo.webp">
+    <link id="web-icon" rel="shortcut icon" type="image/x-icon" href="../logo.webp">
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/8.10.1/firebase-app.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/8.10.1/firebase-database.min.js"></script>
-    <link rel="stylesheet" href="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/photoswipe/4.1.3/photoswipe.min.css">
-    <link rel="stylesheet" href="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/photoswipe/4.1.3/default-skin/default-skin.min.css">
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.3/photoswipe.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.3/default-skin/default-skin.min.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f0f2f5; display: flex; height: 100vh; overflow: hidden; }
@@ -25,14 +25,14 @@
         .chat-item.has-new .badge { display: block; }
         .main-chat { flex: 1; display: flex; flex-direction: column; background: #f5f5f5; }
         .main-header { padding: 15px; background: #fff; font-size: 16px; font-weight: bold; border-bottom: 1px solid #e8e8e8; display: flex; align-items: center; }
-        .header-avatar { width: 34px; height: 34px; border-radius: 50%; background-color: #fff; border: 1px solid #eee; margin-right: 10px; background-size: contain; background-position: center; background-repeat: no-repeat; background-image: url("https://ho-chat3.pages.dev/logo.webp"); }
+        .header-avatar { width: 34px; height: 34px; border-radius: 50%; background-color: #fff; border: 1px solid #eee; margin-right: 10px; background-size: contain; background-position: center; background-repeat: no-repeat; background-image: url("../logo.webp"); }
         #messages { flex: 1; padding: 20px; overflow-y: auto; background: #f4f5f7; scroll-behavior: smooth; }
         .msg-row { display: flex; margin-bottom: 15px; width: 100%; align-items: flex-start; }
         .msg-row.admin { justify-content: flex-end; }
         .msg-row.user { justify-content: flex-start; }
         .avatar { width: 38px; height: 38px; border-radius: 50%; margin: 0 10px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.1); background-size: contain; background-position: center; background-repeat: no-repeat; }
         .user .avatar { background-color: #00bac7; } 
-        .admin .avatar { background-color: #fff; border: 1px solid #eee; background-image: url("https://ho-chat3.pages.dev/logo.webp"); } 
+        .admin .avatar { background-color: #fff; border: 1px solid #eee; background-image: url("../logo.webp"); } 
         .bubble-name { font-size: 12px; color: #888; margin-bottom: 2px; text-align: right; margin-right: 58px; }
         .bubble { max-width: calc(65% - 48px); padding: 11px 15px; border-radius: 8px; font-size: 14px; line-height: 1.5; word-break: break-all; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
         .admin .bubble { background: #95ec69; color: #000; border-top-right-radius: 0; }
@@ -61,17 +61,26 @@
     </div>
     <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true"><div class="pswp__bg"></div><div class="pswp__scroll-wrap"><div class="pswp__container"><div class="pswp__item"></div><div class="pswp__item"></div><div class="pswp__item"></div></div><div class="pswp__ui pswp__ui--hidden"><div class="pswp__top-bar"><div class="pswp__counter"></div><button class="pswp__button pswp__button--close" title="关闭 (Esc)"></button><button class="pswp__button pswp__button--zoom" title="放大/缩小"></button><div class="pswp__preloader"><div class="pswp__preloader__icn"><div class="pswp__preloader__cut"><div class="pswp__preloader__donut"></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class="pswp__share-tooltip"></div></div><button class="pswp__button pswp__button--arrow--left" title="上一张"></button><button class="pswp__button pswp__button--arrow--right" title="下一张"></button><div class="pswp__caption"><div class="pswp__caption__center"></div></div></div></div></div>
     
-    <script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/photoswipe/4.1.3/photoswipe.min.js"></script>
-    <script src="https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.3/photoswipe.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
     
     <script>
         var db; var currentChat = null; var unreadChats = {}; var flashInterval = null; var currentChatImageItems = [];
         window.onload = function() {
-            const firebaseConfig = { databaseURL: "https://chat-system-87d17-default-rtdb.firebaseio.com" };
+            const firebaseConfig = {
+                apiKey: "AIzaSyDDs2uCueE3NJdZZxpMGp-1Snrt34E4nf0",
+                authDomain: "chat-system-87d17.firebaseapp.com",
+                databaseURL: "https://chat-system-87d17-default-rtdb.firebaseio.com",
+                projectId: "chat-system-87d17",
+                storageBucket: "chat-system-87d17.firebasestorage.app",
+                messagingSenderId: "988901895318",
+                appId: "1:988901895318:web:0163e31b6af1e5aa53a6b7",
+                measurementId: "G-QS936YQXQY"
+            };
             if (typeof firebase !== 'undefined') { if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); } db = firebase.database(); initAdminList(); }
         };
         function initAdminList() {
-            db.ref("chats3").on("value", snap => {
+            db.ref("chats").on("value", snap => {
                 const data = snap.val(); const listDiv = document.getElementById("list"); listDiv.innerHTML = "";
                 if (!data) { listDiv.innerHTML = "<div style='padding:20px;color:gray;text-align:center;'>暂无粉丝咨询</div>"; return; }
                 let sortedIds = Object.keys(data).sort((a, b) => {
@@ -98,9 +107,9 @@
         function checkRemainingUnread() { if (Object.keys(unreadChats).length === 0) { clearInterval(flashInterval); flashInterval = null; document.title = "HO体育客服官方线路 - 管理后台"; } }
         function loadChat(id) {
             currentChat = id; document.getElementById("current-title").innerText = id; const box = document.getElementById("messages"); box.innerHTML = ""; currentChatImageItems = [];
-            db.ref("chats3/" + id + "/messages").off();
-            db.ref("chats3/" + id + "/messages").on("child_added", snap => {
-                const msg = snap.val(); const container = document.createElement("div"); container.style.width = "100%"; container.style.marginBottom = "15px";
+            db.ref("chats/" + id + "/messages").off();
+            db.ref("chats/" + id + "/messages").on("child_added", snap => {
+                const msg = snap.val(); if (!msg) return; const container = document.createElement("div"); container.style.width = "100%"; container.style.marginBottom = "15px";
                 let content = msg.text;
                 if (msg.type === "image") { const imgIndex = currentChatImageItems.length; currentChatImageItems.push({ src: msg.url, w: 1000, h: 1000 }); content = `<img src="${msg.url}" onclick="openAdminPhotoSwipe(${imgIndex})" onload="updateAdminImageSize(this, ${imgIndex})" />`; }
                 if (msg.sender === "admin") { container.innerHTML = `<div class="bubble-name">HO体育-客服小樱</div><div class="msg-row admin"><div class="bubble">${content}</div><div class="avatar"></div></div>`; }
@@ -112,7 +121,8 @@
         function openAdminPhotoSwipe(index) { var pswpElement = document.querySelectorAll('.pswp')[0]; var options = { index: index, bgOpacity: 0.9, showHideOpacity: true, shareEl: false, tapToClose: true }; var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, currentChatImageItems, options); gallery.init(); }
         function sendText() { const inputField = document.getElementById("msg-input"); const contentText = inputField.value.trim(); if (!contentText || !currentChat || !db) return; pushMsg({ sender: "admin", type: "text", text: contentText, timestamp: Date.now() }); inputField.value = ""; }
         function uploadFile(input) { const file = input.files[0]; if (!file || !currentChat || !db) return; const inputField = document.getElementById("msg-input"); inputField.placeholder = "正在加密传输图像..."; inputField.disabled = true; const reader = new FileReader(); reader.onload = function(e) { inputField.placeholder = "输入回复内容..."; inputField.disabled = false; pushMsg({ sender: "admin", type: "image", url: e.target.result, timestamp: Date.now() }); }; reader.readAsDataURL(file); }
-        function pushMsg(msgObj) { db.ref("chats3/" + currentChat + "/messages").push(msgObj); db.ref("chats3/" + currentChat + "/info").set({ lastMsg: "小樱: " + (msgObj.type === "image" ? "[图片]" : msgObj.text), timestamp: Date.now() }); }
+        function pushMsg(msgObj) { db.ref("chats/" + currentChat + "/messages").push(msgObj); db.ref("chats/" + currentChat + "/info").set({ lastMsg: "小樱: " + (msgObj.type === "image" ? "[图片]" : msgObj.text), timestamp: Date.now() }); }
     </script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"7939e04a4baf43c8b86a560f74aac60e","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 </html>
