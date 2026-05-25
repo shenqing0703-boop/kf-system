@@ -75,7 +75,7 @@
 
     function initChat() {
         const box = document.getElementById("messages");
-        db.ref("chats3/" + userId + "/messages").on("child_added", snap => {
+        db.ref("chats/" + userId + "/messages").on("child_added", snap => {
             const msg = snap.val(); 
             if (msg.sender === "admin" && msg.text !== welcomeFirst && msg.text !== welcomeText) { hasAdminReplied = true; }
             const container = document.createElement("div"); container.style.width = "100%"; container.style.marginBottom = "15px";
@@ -93,11 +93,11 @@
     }
 
     function checkAndTriggerFirstWelcome() {
-        db.ref("chats3/" + userId + "/messages").once("value", snap => {
+        db.ref("chats/" + userId + "/messages").once("value", snap => {
             if (!snap.exists()) {
                 setTimeout(() => {
-                    db.ref("chats3/" + userId + "/messages").push({ sender: "admin", type: "text", text: welcomeFirst, timestamp: Date.now() });
-                    db.ref("chats3/" + userId + "/info").set({ lastMsg: "小樱: " + welcomeFirst, timestamp: Date.now() });
+                    db.ref("chats/" + userId + "/messages").push({ sender: "admin", type: "text", text: welcomeFirst, timestamp: Date.now() });
+                    db.ref("chats/" + userId + "/info").set({ lastMsg: "小樱: " + welcomeFirst, timestamp: Date.now() });
                     start20SecondTimer();
                 }, 500);
             }
@@ -107,19 +107,19 @@
     function start20SecondTimer() {
         setTimeout(() => {
             if (hasAdminReplied) return; 
-            db.ref("chats3/" + userId + "/messages").once("value", snap => {
+            db.ref("chats/" + userId + "/messages").once("value", snap => {
                 let hasLongText = false;
                 snap.forEach(child => { if (child.val().text === welcomeText) hasLongText = true; });
                 if (!hasLongText) {
-                    db.ref("chats3/" + userId + "/messages").push({ sender: "admin", type: "text", text: welcomeText, timestamp: Date.now() }); 
-                    db.ref("chats3/" + userId + "/info").set({ lastMsg: "小樱: " + welcomeText, timestamp: Date.now() });
+                    db.ref("chats/" + userId + "/messages").push({ sender: "admin", type: "text", text: welcomeText, timestamp: Date.now() }); 
+                    db.ref("chats/" + userId + "/info").set({ lastMsg: "小樱: " + welcomeText, timestamp: Date.now() });
                 }
             });
         }, 20000); // 🔒 20秒
     }
 
     function sendText() { const input = document.getElementById("msg-input"); const text = input.value.trim(); if (!text || !db) return; pushMsg({ sender: "user", type: "text", text: text, timestamp: Date.now() }); input.value = ""; }
-    function pushMsg(msgObj) { db.ref("chats3/" + userId + "/messages").push(msgObj); db.ref("chats3/" + userId + "/info").set({ lastMsg: msgObj.type === "image" ? "[图片]" : msgObj.text, timestamp: Date.now() }); }
+    function pushMsg(msgObj) { db.ref("chats/" + userId + "/messages").push(msgObj); db.ref("chats/" + userId + "/info").set({ lastMsg: msgObj.type === "image" ? "[图片]" : msgObj.text, timestamp: Date.now() }); }
     function uploadFile(input) { const file = input.files[0]; if (!file || !db) return; const inputField = document.getElementById("msg-input"); inputField.placeholder = "正在加密传输图像..."; inputField.disabled = true; const reader = new FileReader(); reader.onload = function(e) { inputField.placeholder = "请输入您的问题..."; inputField.disabled = false; pushMsg({ sender: "user", type: "image", url: e.target.result, timestamp: Date.now() }); }; reader.readAsDataURL(file); }
     function updateImageSize(imgHtml, index) { if (imageItems[index]) { imageItems[index].w = imgHtml.naturalWidth || 1000; imageItems[index].h = imgHtml.naturalHeight || 1000; } }
     function openPhotoSwipe(index) { var pswpElement = document.querySelectorAll('.pswp')[0]; var options = { index: index, bgOpacity: 0.85, showHideOpacity: true, history: false, shareEl: false, tapToClose: true }; var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, imageItems, options); gallery.init(); }
