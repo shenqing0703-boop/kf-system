@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>HO体育客服官方线路</title>
-    <link id="web-icon" rel="shortcut icon" type="image/x-icon" href="https://ho-chat3.pages.dev/logo.webp">
+    <link id="web-icon" rel="shortcut icon" type="image/x-icon" href="../logo.webp">
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/8.10.1/firebase-app.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/8.10.1/firebase-database.min.js"></script>
@@ -16,14 +16,14 @@
         html, body { height: 100%; width: 100%; overflow: hidden; background: #eaeaea; font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif; }
         .chat-container { width: 100%; max-width: 500px; height: 100%; background: #eaeaea; display: flex; flex-direction: column; margin: 0 auto; box-shadow: 0 0 20px rgba(0,0,0,0.08); }
         .chat-header { background: linear-gradient(180deg, #00b85c 0%, #00a854 100%); color: #ffffff; padding: 14px 20px; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: bold; flex-shrink: 0; gap: 10px; box-shadow: 0 2px 8px rgba(0, 168, 84, 0.25); z-index: 10; }
-        .header-logo { width: 30px; height: 30px; border-radius: 50%; background-color: #ffffff; background-image: url("https://ho-chat3.pages.dev/logo.webp"); background-size: 78%; background-position: center; background-repeat: no-repeat; flex-shrink: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .header-logo { width: 30px; height: 30px; border-radius: 50%; background-color: #ffffff; background-image: url("../logo.webp"); background-size: 78%; background-position: center; background-repeat: no-repeat; flex-shrink: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         #messages { flex: 1; padding: 18px 14px; overflow-y: auto; -webkit-overflow-scrolling: touch; scroll-behavior: smooth; background: #eaeaea; }
         .msg-row { display: flex; margin-bottom: 16px; width: 100%; align-items: flex-start; }
         .msg-row.user { justify-content: flex-end; }
         .msg-row.admin { justify-content: flex-start; }
         .avatar { width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: white; font-size: 13px; font-weight: bold; box-shadow: 0 2px 6px rgba(0,0,0,0.06); background-size: contain; background-position: center; background-repeat: no-repeat; }
         .user .avatar { background-color: #00bac7; margin-left: 10px; } 
-        .admin .avatar { background-color: #ffffff; border: 1px solid rgba(0,0,0,0.05); background-image: url("https://ho-chat3.pages.dev/logo.webp"); background-size: 82%; margin-right: 10px; } 
+        .admin .avatar { background-color: #ffffff; border: 1px solid rgba(0,0,0,0.05); background-image: url("../logo.webp"); background-size: 82%; margin-right: 10px; } 
         .bubble-name { font-size: 11px; color: #777; margin-left: 52px; margin-bottom: 3px; text-align: left; font-weight: 500; }
         .bubble { max-width: calc(100% - 106px); padding: 11px 15px; border-radius: 14px; font-size: 15px; line-height: 1.45; word-break: break-all; box-shadow: 0 2px 5px rgba(0,0,0,0.04); }
         .user .bubble { background: #95ec69; color: #000; border-top-right-radius: 2px; }
@@ -65,20 +65,26 @@
     var hasAdminReplied = false; 
 
     window.onload = function() {
-const firebaseConfig = {
-  apiKey: "AIzaSyDDs2uCueE3NJdZZxpMGp-1Snrt34E4nf0",
-  authDomain: "chat-system-87d17.firebaseapp.com",
-  databaseURL: "https://chat-system-87d17-default-rtdb.firebaseio.com",
-  projectId: "chat-system-87d17",
-  storageBucket: "chat-system-87d17.firebasestorage.app",
-  messagingSenderId: "988901895318",
-  appId: "1:988901895318:web:0163e31b6af1e5aa53a6b7",
-  measurementId: "G-QS936YQXQY"
-};
+        const firebaseConfig = {
+            apiKey: "AIzaSyDDs2uCueE3NJdZZxpMGp-1Snrt34E4nf0",
+            authDomain: "chat-system-87d17.firebaseapp.com",
+            databaseURL: "https://chat-system-87d17-default-rtdb.firebaseio.com",
+            projectId: "chat-system-87d17",
+            storageBucket: "chat-system-87d17.firebasestorage.app",
+            messagingSenderId: "988901895318",
+            appId: "1:988901895318:web:0163e31b6af1e5aa53a6b7",
+            measurementId: "G-QS936YQXQY"
+        };
+        if (typeof firebase !== 'undefined') { 
+            if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); } 
+            db = firebase.database(); 
+            initChat(); 
+        }
+    };
 
     function initChat() {
         const box = document.getElementById("messages");
-        db.ref("chats/" + userId + "/messages").on("child_added", snap => {
+        db.ref("chats3/" + userId + "/messages").on("child_added", snap => {
             const msg = snap.val(); 
             if (msg.sender === "admin" && msg.text !== welcomeFirst && msg.text !== welcomeText) { hasAdminReplied = true; }
             const container = document.createElement("div"); container.style.width = "100%"; container.style.marginBottom = "15px";
@@ -96,11 +102,11 @@ const firebaseConfig = {
     }
 
     function checkAndTriggerFirstWelcome() {
-        db.ref("chats/" + userId + "/messages").once("value", snap => {
+        db.ref("chats3/" + userId + "/messages").once("value", snap => {
             if (!snap.exists()) {
                 setTimeout(() => {
-                    db.ref("chats/" + userId + "/messages").push({ sender: "admin", type: "text", text: welcomeFirst, timestamp: Date.now() });
-                    db.ref("chats/" + userId + "/info").set({ lastMsg: "小樱: " + welcomeFirst, timestamp: Date.now() });
+                    db.ref("chats3/" + userId + "/messages").push({ sender: "admin", type: "text", text: welcomeFirst, timestamp: Date.now() });
+                    db.ref("chats3/" + userId + "/info").set({ lastMsg: "小樱: " + welcomeFirst, timestamp: Date.now() });
                     start20SecondTimer();
                 }, 500);
             }
@@ -110,22 +116,23 @@ const firebaseConfig = {
     function start20SecondTimer() {
         setTimeout(() => {
             if (hasAdminReplied) return; 
-            db.ref("chats/" + userId + "/messages").once("value", snap => {
+            db.ref("chats3/" + userId + "/messages").once("value", snap => {
                 let hasLongText = false;
                 snap.forEach(child => { if (child.val().text === welcomeText) hasLongText = true; });
                 if (!hasLongText) {
-                    db.ref("chats/" + userId + "/messages").push({ sender: "admin", type: "text", text: welcomeText, timestamp: Date.now() }); 
-                    db.ref("chats/" + userId + "/info").set({ lastMsg: "小樱: " + welcomeText, timestamp: Date.now() });
+                    db.ref("chats3/" + userId + "/messages").push({ sender: "admin", type: "text", text: welcomeText, timestamp: Date.now() }); 
+                    db.ref("chats3/" + userId + "/info").set({ lastMsg: "小樱: " + welcomeText, timestamp: Date.now() });
                 }
             });
         }, 20000); // 🔒 20秒
     }
 
     function sendText() { const input = document.getElementById("msg-input"); const text = input.value.trim(); if (!text || !db) return; pushMsg({ sender: "user", type: "text", text: text, timestamp: Date.now() }); input.value = ""; }
-    function pushMsg(msgObj) { db.ref("chats/" + userId + "/messages").push(msgObj); db.ref("chats/" + userId + "/info").set({ lastMsg: msgObj.type === "image" ? "[图片]" : msgObj.text, timestamp: Date.now() }); }
+    function pushMsg(msgObj) { db.ref("chats3/" + userId + "/messages").push(msgObj); db.ref("chats3/" + userId + "/info").set({ lastMsg: msgObj.type === "image" ? "[图片]" : msgObj.text, timestamp: Date.now() }); }
     function uploadFile(input) { const file = input.files[0]; if (!file || !db) return; const inputField = document.getElementById("msg-input"); inputField.placeholder = "正在加密传输图像..."; inputField.disabled = true; const reader = new FileReader(); reader.onload = function(e) { inputField.placeholder = "请输入您的问题..."; inputField.disabled = false; pushMsg({ sender: "user", type: "image", url: e.target.result, timestamp: Date.now() }); }; reader.readAsDataURL(file); }
     function updateImageSize(imgHtml, index) { if (imageItems[index]) { imageItems[index].w = imgHtml.naturalWidth || 1000; imageItems[index].h = imgHtml.naturalHeight || 1000; } }
     function openPhotoSwipe(index) { var pswpElement = document.querySelectorAll('.pswp')[0]; var options = { index: index, bgOpacity: 0.85, showHideOpacity: true, history: false, shareEl: false, tapToClose: true }; var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, imageItems, options); gallery.init(); }
 </script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"7939e04a4baf43c8b86a560f74aac60e","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 </html>
